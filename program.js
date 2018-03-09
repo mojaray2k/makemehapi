@@ -14,8 +14,7 @@ const start= async () => {
         path: '/{param*}',
         handler: {
             directory: {
-                path: 'public',
-                listing: true
+                path: Path.join(__dirname, 'public')
             }
         }
     });
@@ -28,6 +27,7 @@ start();
     
 /**
  * Here the comparison with makemehapi
+    const Path = require('path');
     const Hapi = require('hapi');
     const Inert = require('inert');
 
@@ -35,21 +35,18 @@ start();
         try {
             const server = Hapi.Server({
                 host: 'localhost',
-                port: process.argv[2] || 8080,
-                routes: {
-                    files: {
-                        relativeTo: __dirname
-                    }
-                }
+                port: process.argv[2] || 8080
             });
 
             await server.register(Inert);
 
             server.route({
-                path: '/',
+                path: '/foo/bar/baz/{filename}',
                 method: 'GET',
                 handler: {
-                    file: 'index.html'
+                    directory: {
+                        path: Path.join(__dirname, 'public')
+                    }
                 }
             });
 
