@@ -7,22 +7,16 @@ const server = new Hapi.Server({
 });
 
 const start= async () => {
-    await server.register(require('vision'));
+    await server.register({ plugin: require('h2o2') });
 
-    server.views({
-        engines: {
-            html: require('handlebars')
-        },
-        relativeTo: __dirname,
-        path: 'templates'
-    });
 
     server.route({
-        method: 'GET',
-        path: '/',
+        method: '*',
+        path: '/proxy',
         handler: {
-            view: {
-                template: 'index'
+            proxy: {
+                host: '127.0.0.1',
+                port: 65535
             }
         }
     });
@@ -35,39 +29,31 @@ start();
     
 /**
  * Here the comparison with makemehapi
-    const Path = require('path');
     const Hapi = require('hapi');
-    const Vision = require('vision');
-    const Handlebars = require('handlebars');
+    const H2o2 = require('h2o2');
 
     (async () => {
         try {
-            const serverPort = process.argv[2] || 8080;
             const server = Hapi.Server({
                 host: 'localhost',
                 port: process.argv[2] || 8080
             });
 
-            await server.register(Vision);
-
-            server.views({
-                engines: {
-                    html: Handlebars
-                },
-                path: Path.join(__dirname, 'templates')
-            });
+            await server.register(H2o2);
 
             server.route({
-                path: '/',
                 method: 'GET',
+                path: '/proxy',
                 handler: {
-                    view: 'index.html'
+                    proxy: {
+                        host: '127.0.0.1',
+                        port: 65535
+                    }
                 }
             });
 
             await server.start();
 
-            console.log(`Server running at: ${server.info.uri}`);
         } catch (error) {
             console.log(error);
         }
