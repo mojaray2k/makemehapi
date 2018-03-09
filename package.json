@@ -1,0 +1,25 @@
+{
+  "name": "makemehapi",
+  "version": "1.0.0",
+  "description": "Another Proof of Concept for current Hapi implimentation",
+  "main": "program.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojaray2k/makemehapi.git"
+  },
+  "keywords": [
+    "hapi"
+  ],
+  "author": "Amen Ra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mojaray2k/makemehapi/issues"
+  },
+  "homepage": "https://github.com/mojaray2k/makemehapi#readme",
+  "dependencies": {
+    "hapi": "^17.2.2"
+  }
+}
