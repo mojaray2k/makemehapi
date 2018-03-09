@@ -7,14 +7,22 @@ const server = new Hapi.Server({
 });
 
 const start= async () => {
-    await server.register(require('inert'));
-    
+    await server.register(require('vision'));
+
+    server.views({
+        engines: {
+            html: require('handlebars')
+        },
+        relativeTo: __dirname,
+        path: 'templates'
+    });
+
     server.route({
         method: 'GET',
-        path: '/{param*}',
+        path: '/',
         handler: {
-            directory: {
-                path: Path.join(__dirname, 'public')
+            view: {
+                template: 'index'
             }
         }
     });
@@ -29,29 +37,37 @@ start();
  * Here the comparison with makemehapi
     const Path = require('path');
     const Hapi = require('hapi');
-    const Inert = require('inert');
+    const Vision = require('vision');
+    const Handlebars = require('handlebars');
 
     (async () => {
         try {
+            const serverPort = process.argv[2] || 8080;
             const server = Hapi.Server({
                 host: 'localhost',
                 port: process.argv[2] || 8080
             });
 
-            await server.register(Inert);
+            await server.register(Vision);
+
+            server.views({
+                engines: {
+                    html: Handlebars
+                },
+                path: Path.join(__dirname, 'templates')
+            });
 
             server.route({
-                path: '/foo/bar/baz/{filename}',
+                path: '/',
                 method: 'GET',
                 handler: {
-                    directory: {
-                        path: Path.join(__dirname, 'public')
-                    }
+                    view: 'index.html'
                 }
             });
 
             await server.start();
 
+            console.log(`Server running at: ${server.info.uri}`);
         } catch (error) {
             console.log(error);
         }
