@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/mojaray2k/makemehapi#readme",
   "dependencies": {
-    "hapi": "^17.2.2"
+    "hapi": "^17.2.2",
+    "inert": "^5.1.0",
+    "vision": "^5.3.1"
   }
 }

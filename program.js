@@ -1,34 +1,26 @@
 const Hapi = require('hapi');
+const Path = require('path');
 
 const server = new Hapi.Server({
     host: 'localhost',
     port: Number(process.argv[2] || 8080)
 });
 
-server.route({
-    path: '/{name?}', 
-    method:'GET', 
-    handler: handler
-});
-
-function handler(request, h) {
+const start= async () => {
+    await server.register(require('inert'));
     
-    // Request has all information
-    // a string can be returned
+    server.route({
+        method: 'GET',
+        path: '/{param*}',
+        handler: {
+            directory: {
+                path: 'public',
+                listing: true
+            }
+        }
+    });
     
-    return `Hello ${request.params.name} `;
-}
-
-async function start(){
-
-    try {
-        await server.start();
-    }
-    catch(err) {
-        console.log(err);
-        process.exit(1);
-    }
-
+    await server.start();
     console.log('Server running at:', server.info.uri);
 }
 
@@ -37,29 +29,34 @@ start();
 /**
  * Here the comparison with makemehapi
     const Hapi = require('hapi');
+    const Inert = require('inert');
 
     (async () => {
         try {
             const server = Hapi.Server({
                 host: 'localhost',
-                port: Number(process.argv[2] || 8080)
+                port: process.argv[2] || 8080,
+                routes: {
+                    files: {
+                        relativeTo: __dirname
+                    }
+                }
             });
 
+            await server.register(Inert);
+
             server.route({
-                path: '/{name}',
+                path: '/',
                 method: 'GET',
-                handler: function (request, h) {
-                    return `Hello ${request.params.name} `;
-
-                    // a more secure alternative is this:
-                    //
-                    // return `Hello ${encodeURIComponent(request.params.name)}`;
-                    //
-                    // encodeURIComponent escapes all characters except the following: alphabetic, decimal digits, - _ . ! ~ * ' ( )
-                    // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-                    // for more details why you should call encodeURIComponent on any user-entered parameter
+                handler: {
+                    file: 'index.html'
                 }
-        });
+            });
 
-    await server.start();
+            await server.start();
+
+        } catch (error) {
+            console.log(error);
+        }
+    })();
  */
